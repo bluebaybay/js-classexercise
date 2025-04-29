@@ -95,6 +95,11 @@
                 console.log("DATE:", data.properties.generatedAT)
 
                 console.log("PERIODS:", data.properties.periods.length)
+
+                var daytimePeriods = data.properties.periods.filter(function(period){
+                    return period.isDaytime == true
+                })
+                console.log("DAYTIME PERIODS:", daytimePeriods.length)
                 
             
 
