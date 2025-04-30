@@ -102,8 +102,12 @@
                 console.log("DAYTIME PERIODS:", daytimePeriods.length)
 
                 daytimePeriods.forEach(function(p) {
-                    console.log("----")
-                    console.log(p)
+                    //console.log("----")
+                    //console.log(p)
+                    console.log(p.name, p.temperature, p.temperatureUnit)
+                    console.log(p.name, p.temperature + degreeSymbol + p.temperatureUnit)
+                    console.log(p.shortForecast)
+                    })
             
 
 
