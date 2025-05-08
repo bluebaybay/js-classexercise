@@ -89,39 +89,45 @@
 
 
         // FUNCTION DEFINITION
-        function lookupCompany() {
-            var symbol = inputSymbol.value
-            console.log("SYMBOL:", symbol)
+function lookupCompany() {
+    const symbol = document.getElementById("input-symbol").value.trim().toUpperCase();
+    console.log("SYMBOL:", symbol);
 
-            var requestUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${apiKey}`
-            d3.json(requestUrl).then(function(data) {
-                console.log("RESPONSE:", data)
+    const requestUrl = `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${apiKey}`;
+    d3.json(requestUrl).then(function(data) {
+        console.log("RESPONSE:", data);
 
-                console.log("---------------------")
-                console.log("PART 1...")
+        console.log("---------------------");
+        console.log("PART 1...");
 
+        // A. Log company info
+        console.log("Company Name:", data.Name);
+        console.log("Description:", data.Description);
+        console.log("Website:", data.Website);
 
+        console.log("---------------------");
+        console.log("PART 2...");
 
+        // B. Display company info
+        document.getElementById("display-name").textContent = data.Name || "Not available";
+        document.getElementById("display-description").textContent = data.Description || "Not available";
+        
+        const link = document.getElementById("display-link");
+        link.href = data.Website || "#";
+        link.textContent = data.Website || "Not available";
 
+    }).catch(function(error) {
+        console.error("ERROR:", error);
+        alert("Failed to fetch data. Please try again.");
+    });
+}
 
+// FUNCTION INVOCATIONS
+// Call once on page load
+lookupCompany();
+// Call on button click
+document.getElementById("lookup").addEventListener("click", lookupCompany, false);
 
-                console.log("---------------------")
-                console.log("PART 2...")
-
-
-
-
-
-            }).catch(function(error) {
-                console.error("ERROR:", error)
-            })
-        }
-
-        // FUNCTION INVOCATIONS
-        // invoke function when the page loads:
-        //lookupCompany()
-        // invoke function when button is clicked:
-        //lookupButton.addEventListener("click", lookupCompany, false)
 
     </script>
 </body>
