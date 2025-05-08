@@ -100,15 +100,68 @@
         ]
 
         console.log("---------------------")
-        console.log("PART 1...")
+console.log("PART 1...")
 
+// A. First tweet's screen name
+console.log("A. Author of First Tweet:", "@" + tweets[0].user.screen_name);
 
+// B. Tweets mentioning "@sandwoah"
+const mentionTweets = tweets.filter(tweet => tweet.full_text.includes("@sandwoah"));
+console.log("B. Tweets mentioning @sandwoah:");
+mentionTweets.forEach(tweet => {
+    console.log("-", tweet.user.screen_name);
+});
 
+// C. Most liked tweet that mentions @sandwoah
+let mostLikedTweet = d3.max(mentionTweets, d => d.likes_count);
+let topTweet = mentionTweets.find(t => t.likes_count === mostLikedTweet);
+console.log("C. Most Liked Mention:", topTweet.user.screen_name);
 
+console.log("---------------------")
+console.log("PART 2...")
 
+// A. Sort tweets by likes descending
+let sortedTweets = tweets.slice().sort((a, b) => b.likes_count - a.likes_count);
 
-        console.log("---------------------")
-        console.log("PART 2...")
+// B. Display in table
+const table = document.getElementById("social-feed");
+
+// Create header
+const headerRow = document.createElement("tr");
+["Tweet Id", "Tweet Text", "User Screen Name", "User Followers", "Tweet Likes"].forEach(col => {
+    const th = document.createElement("th");
+    th.textContent = col;
+    headerRow.appendChild(th);
+});
+table.appendChild(headerRow);
+
+// Create rows
+sortedTweets.forEach(tweet => {
+    const row = document.createElement("tr");
+
+    const idCell = document.createElement("td");
+    idCell.textContent = tweet.id;
+    row.appendChild(idCell);
+
+    const textCell = document.createElement("td");
+    textCell.textContent = tweet.full_text;
+    row.appendChild(textCell);
+
+    const screenNameCell = document.createElement("td");
+    screenNameCell.textContent = "@" + tweet.user.screen_name;
+    row.appendChild(screenNameCell);
+
+    const followersCell = document.createElement("td");
+    followersCell.textContent = tweet.user.followers;
+    row.appendChild(followersCell);
+
+    const likesCell = document.createElement("td");
+    likesCell.textContent = tweet.likes_count;
+    row.appendChild(likesCell);
+
+    table.appendChild(row);
+});
+
 
 
 
