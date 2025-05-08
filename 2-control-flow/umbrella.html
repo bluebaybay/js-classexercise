@@ -67,28 +67,51 @@
 
 
     <script type="text/javascript">
-
         console.log("---------------------")
         console.log("PART 1...")
-
-
-
-
-
+    
+        let isRaining = true;
+        let ownsUmbrella = false;
+    
+        console.log("Is Raining:", isRaining);
+        console.log("Owns Umbrella:", ownsUmbrella);
+    
+        if (!isRaining) {
+            console.log("Skies are clear");
+        } else if (ownsUmbrella) {
+            console.log("Bring your umbrella");
+        } else {
+            console.log("Buy an umbrella");
+        }
+    
         console.log("---------------------")
         console.log("PART 2...")
-
-
-
-
-
+    
+        function advise(isRaining, ownsUmbrella) {
+            if (!isRaining) {
+                return "Skies are clear";
+            } else if (ownsUmbrella) {
+                return "Bring your umbrella";
+            } else {
+                return "Buy an umbrella";
+            }
+        }
+    
+        console.log("Test Case 1:", advise(false, false)); // Skies are clear
+        console.log("Test Case 2:", advise(false, true));  // Skies are clear
+        console.log("Test Case 3:", advise(true, false));  // Buy an umbrella
+        console.log("Test Case 4:", advise(true, true));   // Bring your umbrella
+    
         console.log("---------------------")
         console.log("PART 3...")
-
-
-
-
-
+    
+        document.getElementById("advise").addEventListener("click", function () {
+            const isRaining = document.getElementById("switch-raining").checked;
+            const ownsUmbrella = document.getElementById("switch-umbrella").checked;
+            const message = advise(isRaining, ownsUmbrella);
+            document.getElementById("display-message").textContent = message;
+        });
     </script>
+    
 </body>
 </html>
