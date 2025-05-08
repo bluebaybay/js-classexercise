@@ -48,55 +48,134 @@
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/d3-random@3"></script>
     <script type="text/javascript">
-
-function formatUSD(price) {
-  return `$${price.toFixed(2)}`;
-}
-
-console.log("---------------------");
-console.log("PART 1...");
-
-// Part 1: Constant 8% return until $1M
-let balance1 = 150000;
-const target = 1000000;
-const fixedRate = 0.08;
-let years1 = 0;
-
-while (balance1 < target) {
-  balance1 += balance1 * fixedRate;
-  years1++;
-}
-
-console.log("Starting Balance:", formatUSD(150000));
-console.log("Years Needed:", years1);
-console.log("Final Balance:", formatUSD(balance1));
-
-console.log("---------------------");
-console.log("PART 2...");
-
-// Part 2: Simulated variable return using normal distribution
-let balance2 = 150000;
-let years2 = 0;
-const mean = 0.08;
-const stdev = 0.15;
-const rng = d3.randomNormal(mean, stdev);
-let returns = [];
-
-while (balance2 < target) {
-  let annualReturn = rng();
-  returns.push(annualReturn);
-  balance2 += balance2 * annualReturn;
-  years2++;
-}
-
-console.log("Starting Balance:", formatUSD(150000));
-console.log("Years Needed (random):", years2);
-console.log("Final Balance:", formatUSD(balance2));
-console.log("Yearly Returns:", returns.map(r => `${(r * 100).toFixed(2)}%`).join(", "));
-
-console.log("----------------
+        function formatUSD(price) {
+          return `$${price.toFixed(2)}`;
+        }
+        
+        console.log("---------------------");
+        console.log("PART 1...");
+        
+        // Part 1: Constant 8% return until $1M
+        let balance1 = 150000;
+        const target = 1000000;
+        const fixedRate = 0.08;
+        let years1 = 0;
+        
+        while (balance1 < target) {
+          balance1 += balance1 * fixedRate;
+          years1++;
+        }
+        
+        console.log("Starting Balance:", formatUSD(150000));
+        console.log("Years Needed:", years1);
+        console.log("Final Balance:", formatUSD(balance1));
+        
+        console.log("---------------------");
+        console.log("PART 2...");
+        
+        // Part 2: Simulated random returns
+        let balance2 = 150000;
+        let years2 = 0;
+        const mean = 0.08;
+        const stdev = 0.15;
+        const rng = d3.randomNormal(mean, stdev);
+        let returns = [];
+        
+        while (balance2 < target) {
+          let annualReturn = rng();
+          returns.push(annualReturn);
+          balance2 += balance2 * annualReturn;
+          years2++;
+        }
+        
+        console.log("Starting Balance:", formatUSD(150000));
+        console.log("Years Needed (random):", years2);
+        console.log("Final Balance:", formatUSD(balance2));
+        console.log("Yearly Returns:", returns.map(r => `${(r * 100).toFixed(2)}%`).join(", "));
+        
+        console.log("---------------------");
+        console.log("PART 3...");
+        
+        // Part 3: Interactive form + chart
+        document.body.insertAdjacentHTML("beforeend", `
+          <div style="margin-top: 40px;">
+            <h3>Run Your Own Simulation</h3>
+            <label>Initial Balance: <input type="number" id="input-start" value="150000"></label><br>
+            <label>Target Balance: <input type="number" id="input-target" value="1000000"></label><br>
+            <label>Mean Annual Return (e.g. 0.08): <input type="number" step="0.01" id="input-mean" value="0.08"></label><br>
+            <label>Standard Deviation (e.g. 0.15): <input type="number" step="0.01" id="input-stddev" value="0.15"></label><br>
+            <button id="simulate">Simulate Investment</button>
+            <p id="output"></p>
+            <svg id="chart" width="600" height="300"></svg>
+          </div>
+        `);
+        
+        document.getElementById("simulate").addEventListener("click", () => {
+          let start = parseFloat(document.getElementById("input-start").value);
+          let goal = parseFloat(document.getElementById("input-target").value);
+          let mean = parseFloat(document.getElementById("input-mean").value);
+          let stddev = parseFloat(document.getElementById("input-stddev").value);
+        
+          if ([start, goal, mean, stddev].some(isNaN) || start <= 0 || goal <= 0) {
+            alert("Please enter valid positive numbers.");
+            return;
+          }
+        
+          let rng = d3.randomNormal(mean, stddev);
+          let years = 0;
+          let balance = start;
+          let balances = [];
+        
+          while (balance < goal) {
+            balances.push(balance);
+            let r = rng();
+            balance += balance * r;
+            years++;
+          }
+          balances.push(balance); // final year
+        
+          document.getElementById("output").innerHTML = `
+            <strong>Years:</strong> ${years}<br>
+            <strong>Final Balance:</strong> ${formatUSD(balance)}
+          `;
+        
+          // Draw chart
+          const svg = d3.select("#chart");
+          svg.selectAll("*").remove(); // Clear old chart
+          const width = +svg.attr("width");
+          const height = +svg.attr("height");
+          const margin = { top: 20, right: 30, bottom: 30, left: 50 };
+        
+          const x = d3.scaleLinear()
+            .domain([0, balances.length - 1])
+            .range([margin.left, width - margin.right]);
+        
+          const y = d3.scaleLinear()
+            .domain([start, d3.max(balances)])
+            .range([height - margin.bottom, margin.top]);
+        
+          const line = d3.line()
+            .x((d, i) => x(i))
+            .y(d => y(d));
+        
+          svg.append("path")
+            .datum(balances)
+            .attr("fill", "none")
+            .attr("stroke", "#45a29e")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+        
+          svg.append("g")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).ticks(6).tickFormat(d => `${d} yr`));
+        
+          svg.append("g")
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(y).ticks(6).tickFormat(d => `$${Math.round(d / 1000)}k`));
+        });
+        </script>
+        
 
 
 
