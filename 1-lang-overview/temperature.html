@@ -60,24 +60,44 @@
 
 
     <script type="text/javascript">
-
         console.log("---------------------")
         console.log("PART 1...")
-
-
-
-
-
+    
+        // Part 1: model Celsius temperature and convert to Fahrenheit
+        let celsius = -270;
+        let fahrenheit = (celsius * 9/5) + 32;
+        console.log(`Celsius: ${celsius}°C`);
+        console.log(`Fahrenheit: ${fahrenheit.toFixed(2)}°F`);
+    
         console.log("---------------------")
         console.log("PART 2...")
-
-
-
-
-
-
+    
+        // Part 2: create function and test it
+        function calculateTemp(tempC) {
+            return (tempC * 9/5) + 32;
+        }
+    
+        let c = -270;
+        let f = calculateTemp(c);
+        console.log(`Celsius: ${c}°C`);
+        console.log(`Fahrenheit: ${f.toFixed(2)}°F`);
+    
         console.log("---------------------")
         console.log("PART 3...")
+    
+        // Part 3: button click to convert
+        document.getElementById("calculate").addEventListener("click", function() {
+            let tempC = parseFloat(document.getElementById("input-temp-c").value);
+            if (isNaN(tempC)) {
+                alert("Please enter a valid number for Celsius temperature.");
+                return;
+            }
+    
+            let tempF = calculateTemp(tempC);
+            document.getElementById("display-temp-f").textContent = `${tempF.toFixed(2)}°F`;
+        });
+    </script>
+    
 
 
 
