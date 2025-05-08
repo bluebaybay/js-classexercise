@@ -62,49 +62,56 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-<script type="text/javascript">
-  const requestUrl = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic";
-
-  d3.json(requestUrl).then(function(data) {
-    console.log("DATA:", data);
-
-    const drinks = data.drinks;
-
-    console.log("---------------------");
-    console.log("PART 1...");
-
-    // A. Log the request URL
-    console.log("Request URL:", requestUrl);
-
-    // B. Number of drinks
-    console.log("Number of Drinks:", drinks.length);
-
-    // C. Loop through drinks and log name + ID
-    drinks.forEach(drink => {
-      console.log(`${drink.strDrink} (ID: ${drink.idDrink})`);
-    });
-
-    console.log("---------------------");
-    console.log("PART 2...");
-
-    // A. Display drink count
-    document.getElementById("display-drinks-count").textContent = drinks.length;
-
-    // B. Display each drink
-    const container = document.getElementById("display-drinks");
-
-    drinks.forEach(drink => {
-      const div = document.createElement("div");
-
-      const name = document.createElement("p");
-      name.textContent = drink.strDrink;
-
-      const img = document.createElement("img");
-      img.src = drink.strDrinkThumb;
-      img.alt = drink.strDrink;
-      img.height = 100;
-
-      div.appendChild(name);
-
+    <script type="text/javascript">
+      const requestUrl = "https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=Non_Alcoholic";
+    
+      d3.json(requestUrl).then(function(data) {
+        console.log("DATA:", data);
+    
+        const drinks = data.drinks;
+    
+        console.log("---------------------");
+        console.log("PART 1...");
+    
+        // A. Log the request URL
+        console.log("Request URL:", requestUrl);
+    
+        // B. Number of drinks
+        console.log("Number of Drinks:", drinks.length);
+    
+        // C. Loop through drinks and log name + ID
+        drinks.forEach(drink => {
+          console.log(`${drink.strDrink} (ID: ${drink.idDrink})`);
+        });
+    
+        console.log("---------------------");
+        console.log("PART 2...");
+    
+        // A. Display drink count
+        document.getElementById("display-drinks-count").textContent = drinks.length;
+    
+        // B. Display each drink
+        const container = document.getElementById("display-drinks");
+    
+        drinks.forEach(drink => {
+          const div = document.createElement("div");
+    
+          const name = document.createElement("p");
+          name.textContent = drink.strDrink;
+    
+          const img = document.createElement("img");
+          img.src = drink.strDrinkThumb;
+          img.alt = drink.strDrink;
+          img.height = 100;
+    
+          div.appendChild(name);
+          div.appendChild(img);
+          container.appendChild(div);
+        });
+      }).catch(function(error) {
+        console.error("Fetch Error:", error);
+      });
+    </script>
+    
 </body>
 </html>
