@@ -1,72 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Harry Potter Movies (JSON)</title>
-</head>
-<body>
-  <h1>Harry Potter Movies (JSON)</h1>
-
-  <h2>Display</h2>
-  <p>
-    <label for="select-movie">Select a Movie:</label>
-    <select id="select-movie">
-      <option value="">-- Choose a movie --</option>
-    </select>
-  </p>
-
-  <p><strong>Title:</strong> <span id="display-title">TODO</span></p>
-  <p><strong>Year:</strong> <span id="display-year">TODO</span></p>
-  <p><strong>Rating:</strong> <span id="display-rating">X / 10</span></p>
-  <p><strong>Thumbnail Image:</strong></p>
-  <div id="image-container"></div>
-
-  <script>
-    // Make sure this runs after the DOM loads
-    document.addEventListener("DOMContentLoaded", function () {
-      const url = "https://raw.githubusercontent.com/prof-rossetti/internet-technologies/refs/heads/main/data/hp-movies.json";
-
-      fetch(url)
-        .then(response => response.json())
-        .then(function (movies) {
-          console.log("Fetched movies:", movies);
-
-          // Populate dropdown
-          const select = document.getElementById("select-movie");
-          movies.forEach(movie => {
-            const option = document.createElement("option");
-            option.value = movie.id;
-            option.textContent = movie.title;
-            select.appendChild(option);
-          });
-
-          // Function to update movie info
-          function updateMovieInfo() {
-            const selectedId = select.value;
-            const movie = movies.find(m => m.id === selectedId);
-            if (!movie) return;
-
-            document.getElementById("display-title").textContent = movie.title;
-            document.getElementById("display-year").textContent = movie.year;
-            document.getElementById("display-rating").textContent = `${movie.rating} / 10`;
-
-            const container = document.getElementById("image-container");
-            container.innerHTML = ""; // clear previous
-            const img = document.createElement("img");
-            img.src = movie.poster_url;
-            img.alt = movie.title;
-            img.style.maxWidth = "300px";
-            container.appendChild(img);
-          }
-
-          // Update info on selection change
-          select.addEventListener("change", updateMovieInfo);
-        })
-        .catch(err => {
-          console.error("Failed to fetch movie data:", err);
-          alert("Error fetching movie data. Please check your connection or URL.");
+<script type="text/javascript">
+    var requestUrl = "https://raw.githubusercontent.com/prof-rossetti/internet-technologies/refs/heads/main/data/hp-movies.json";
+    
+    fetch(requestUrl)
+      .then(response => response.json())
+      .then(function (data) {
+        console.log("---------------------");
+        console.log("PART 1.");
+    
+        // A. Number of movies
+        console.log("Number of Movies:", data.length);
+    
+        // B. Movie title and year
+        data.forEach(movie => {
+          console.log(`${movie.title} (${movie.year})`);
         });
-    });
-  </script>
-</body>
-</html>
+    
+        // C. Highest rated movie
+        const topRated = data.reduce((a, b) => a.rating > b.rating ? a : b);
+        console.log("Top Rated Movie:", topRated.title);
+        console.log("Rating:", topRated.rating);
+    
+        console.log("---------------------");
+        console.log("PART 2.");
+    
+        // D. Populate dropdown
+        const select = document.getElementById("select-movie");
+        data.forEach(movie => {
+          const option = document.createElement("option");
+          option.value = movie.id;
+          option.textContent = movie.title;
+          select.appendChild(option);
+        });
+    
+        // E. Create updateMovieInfo function
+        function updateMovieInfo() {
+          const selectedId = select.value;
+          const movie = data.find(m => m.id === selectedId);
+          if (!movie) return;
+    
+          document.getElementById("display-title").textContent = movie.title;
+          document.getElementById("display-year").textContent = movie.year;
+          document.getElementById("display-rating").textContent = movie.rating;
+    
+          const container = document.getElementById("image-container");
+          container.innerHTML = ""; // Clear any existing image
+    
+          const img = document.createElement("img");
+          img.src = movie.poster_url;
+          img.alt = movie.title;
+          img.style.maxWidth = "300px";
+          container.appendChild(img);
+        }
+    
+        // F. Add event listener
+        select.addEventListener("change", updateMovieInfo);
+      })
+      .catch(err => console.error("Fetch error:", err));
+    </script>
+    
