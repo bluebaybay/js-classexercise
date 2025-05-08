@@ -68,58 +68,77 @@
 
 
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          const apiKey = "OPEKNZB4Q8AUFTDY";
-          const url = `https://www.alphavantage.co/query?function=MARKET_STATUS&apikey=${apiKey}`;
-        
-          fetch(url)
-            .then(response => response.json())
-            .then(data => {
-              if (!data.markets) {
-                console.error("No 'markets' data returned from API:", data);
-                alert("Could not load market status. Check your API key or limit.");
-                return;
-              }
-        
-              // Part 1
-              const markets = data.markets;
-              console.log("Total Markets:", markets.length);
-        
-              const equityMarkets = markets.filter(m => m.market_type === "Equity");
-              console.log("Equity Markets:", equityMarkets.length);
-        
-              equityMarkets.forEach(m => {
-                console.log(`Market Type: ${m.market_type}, Region: ${m.region}`);
-              });
-        
-              const usMarket = equityMarkets.find(m => m.region === "United States");
-        
-              if (usMarket) {
-                console.log("U.S. Market Info:");
-                console.log("Market Type:", usMarket.market_type);
-                console.log("Primary Exchanges:", usMarket.primary_exchanges.join(", "));
-                console.log("Open:", usMarket.local_open);
-                console.log("Close:", usMarket.local_close);
-                console.log("Status:", usMarket.current_status.toUpperCase());
-        
-                // Part 2 – Update DOM
-                document.getElementById("display-region").textContent = usMarket.region;
-                document.getElementById("display-type").textContent = usMarket.market_type;
-                document.getElementById("display-exchanges").textContent = usMarket.primary_exchanges.join(", ");
-                document.getElementById("display-open").textContent = usMarket.local_open;
-                document.getElementById("display-close").textContent = usMarket.local_close;
-                document.getElementById("display-status").textContent = usMarket.current_status.toUpperCase();
-              } else {
-                console.warn("U.S. market not found in the data.");
-              }
-            })
-            .catch(error => {
-              console.error("Fetch Error:", error);
-              alert("An error occurred while fetching market data.");
-            });
-        });
-        </script>
-        
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script type="text/javascript">
+
+        // AVOID HARD-CODING THE CREDENTIALS
+        // USE SESSION STORAGE TO MINIMIZE THE NUMBER OF TIMES WE HAVE TO PROVIDE THE CREDENTIAL
+        // check session storage for the API Key:
+        var apiKey = sessionStorage.getItem("ALPHAVANTAGE_API_KEY")
+        if (!apiKey) {
+            // if it isn't there, ask the user to supply it:
+            apiKey = prompt("Please enter your AlphaVantage API key:")
+            // store it in the session for later (so it will persist after refreshing the page)
+            sessionStorage.setItem("ALPHAVANTAGE_API_KEY", apiKey)
+        }
+
+
+
+
+        var requestUrl = `https://www.alphavantage.co/query?function=MARKET_STATUS&apikey=${apiKey}`
+        d3.json(requestUrl).then(function(data) {
+            console.log("RESPONSE:", data)
+
+            console.log("---------------------")
+            console.log("PART 1...")
+            console.log("MARKETS:", data.markets.length)
+
+// FILTER EQUITY MARKETS
+
+var equityMarkets = data.markets.filter(function(market){
+    return market.market_type == "Equity"
+})
+
+console.log("EQUITY MARKETS:", equityMarkets.length)
+
+equityMarkets.forEach(market => {
+    console.log("...", `${market.region} (${market.market_type})`)
+})
+
+// FIND REGION
+
+var region = "United States"
+console.log(region)
+
+var market = equityMarkets.find(function(market){
+    return market.region == region
+})
+
+console.log(market.market_type)
+console.log(market.primary_exchanges)
+console.log(market.local_open)
+console.log(market.local_close)
+console.log(market.current_status.toUpperCase())
+
+
+
+console.log("---------------------")
+console.log("PART 2...")
+
+displayRegion.innerText = market.region
+displayType.innerText = market.market_type
+displayExchanges.innerText = market.primary_exchanges
+displayOpen.innerText = market.local_open
+displayClose.innerText = market.local_close
+displayStatus.innerText = market.current_status.toUpperCase()
+
+
+
+}).catch(function(error) {
+console.error("ERROR:", error)
+})
+
+
+    </script>
 </body>
 </html>
