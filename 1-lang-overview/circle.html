@@ -49,15 +49,36 @@
 
     <script type="text/javascript">
 
-        console.log("---------------------")
-        console.log("PART 1...")
+console.log("---------------------");
+console.log("PART 1...");
 
+// Part 1: Define the function and test it with radius 9
+function calculateCircleArea(radius) {
+    return Math.PI * radius * radius;
+}
 
+let radius = 9;
+let area = calculateCircleArea(radius);
 
+console.log("Radius:", radius);
+console.log("Area:", area.toFixed(2));  // rounded to 2 decimals
 
+console.log("---------------------");
+console.log("PART 2...");
 
-        console.log("---------------------")
-        console.log("PART 2...")
+// Part 2: Add event listener for button click
+document.getElementById("calculate").addEventListener("click", function() {
+    let input = document.getElementById("input-radius");
+    let radiusValue = parseFloat(input.value);
+
+    if (isNaN(radiusValue) || radiusValue < 0) {
+        alert("Please enter a valid, non-negative number for radius.");
+        return;
+    }
+
+    let result = calculateCircleArea(radiusValue);
+    document.getElementById("display-area").textContent = result.toFixed(2);
+});
 
 
 
