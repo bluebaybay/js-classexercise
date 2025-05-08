@@ -124,3 +124,49 @@
     </script>
 </body>
 </html>
+
+
+    // PART 2-A: Display the date
+                var date = new Date(data.properties.generatedAt);
+                document.getElementById("display-date").innerText = date.toISOString().split("T")[0];
+
+                // PART 2-B: Build the table for daytime forecast
+                var table = document.getElementById("display-forecast");
+
+                // Add table headers
+                var headerRow = document.createElement("tr");
+                var headers = ["Period", "Temperature", "Forecast", "Icon"];
+                headers.forEach(function(header) {
+                    var th = document.createElement("th");
+                    th.innerText = header;
+                    headerRow.appendChild(th);
+                });
+                table.appendChild(headerRow);
+
+                // Add rows for each daytime forecast
+                daytimePeriods.forEach(function(period) {
+                    var row = document.createElement("tr");
+
+                    var cell1 = document.createElement("td");
+                    cell1.innerText = period.name;
+                    row.appendChild(cell1);
+
+                    var cell2 = document.createElement("td");
+                    cell2.innerText = period.temperature + degreeSymbol + period.temperatureUnit;
+                    row.appendChild(cell2);
+
+                    var cell3 = document.createElement("td");
+                    cell3.innerText = period.shortForecast || period.detailedForecast;
+                    row.appendChild(cell3);
+
+                    var cell4 = document.createElement("td");
+                    var img = document.createElement("img");
+                    img.src = period.icon;
+                    img.alt = "Weather icon";
+                    img.width = 50; // optional sizing
+                    row.appendChild(cell4);
+                    cell4.appendChild(img);
+
+                    table.appendChild(row);
+                });
+                
